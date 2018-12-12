@@ -24,18 +24,49 @@ class TodoListState extends State<TodoList> {
     }
   }
 
+  void _removeTodoItem(int index) {
+    setState(() {
+      return _todoItems.removeAt(index);
+    });
+  }
+
+  void _promRemoveItem(int index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => new AlertDialog(
+              title:
+                  new Text('Tandai "${_todoItems[index]}" sebagai selesai ?'),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text('Batal'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                new FlatButton(
+                  child: new Text('Tandai Sebagai Selesai'),
+                  onPressed: () {
+                    _removeTodoItem(index);
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
+  }
+
   Widget _buildTodoList() {
     return new ListView.builder(
       itemBuilder: (context, index) {
         if (index < _todoItems.length) {
-          return _buildTodoItem(_todoItems[index]);
+          return _buildTodoItem(_todoItems[index], index);
         }
       },
     );
   }
 
-  Widget _buildTodoItem(String todoText) {
-    return new ListTile(title: new Text(todoText));
+  Widget _buildTodoItem(String todoText, int index) {
+    return new ListTile(
+      title: new Text(todoText),
+      onTap: () => _promRemoveItem(index),
+    );
   }
 
   @override
